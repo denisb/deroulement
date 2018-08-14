@@ -1,28 +1,29 @@
 Révision Binaire
-* Représentations Vecteurs binaires
+* Vecteurs binaires
  - Table de vérité
- - Arbre de décision
-* Ascii UTF
+ [-] Arbre de décision
+* Char & Texte
+ - Ascii
  - ISO-Roman
- - UTF8
- (-) BOM
-* Binaire Naturels
+ - UTF8 [BOM]
+ - Texte
+* Naturels
  - Puissance de 2
- - Evaluation d'un binaire
- - Codage en binaire
+ - bin => nat
+ - nat => bin
  - Hexa-décimal
-* C2 Relatifs
- - Codage des relatifs
- (-) C2 par -1
+* Relatifs
+ - C1, S+V, Exc
+ - C2
  - Inverse
- - Bornes, Valeurs extrèmes, Comportement aux bornes 
-* Arithmétique en C2
+ - Aux bornes
+* Arithmétique
  - Addition
  - Soustraction
- - Multiplication
- (-) Autres (Division, Racine carrée, Fonctions Trigo, ...)
+ - Multiplication 
+ [-] Division
+ [-] Racine carrée
 * Flottants
  - Virgule fixe
- - format sur qlq bits (4?)
- - IEEE754 (normalisé)
- - IEEE754 (le reste: dénormalisé, NaN, ...)
+ - IEEE754 normalisé
+ [-] NaN, dénormalisé
