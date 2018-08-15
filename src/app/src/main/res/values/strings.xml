@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Deroulement</string>
+    <string name="title_home">Home</string>
+    <string name="title_heure">Heure</string>
+    <string name="title_titre">Titre</string>
+    <string name="text_titre">Titre (defaut)</string>
+    <string name="title_soustitre">Sous-Titre</string>
+    <string name="text_soustitre">Sous-Titre (defaut)</string>
+    <string name="title_contenu">Contenu</string>
+    <string name="text_contenu">Contenu (defaut)</string>
+    <string name="title_main">Main</string>
+    <string name="title_preferences">Preferences</string>
+</resources>
