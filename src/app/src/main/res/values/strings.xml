@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">Deroulement</string>
-    <string name="title_home">Home</string>
+    <string name="app_name">"Déroulement         (\"j'adore quand un plan se déroule sans accroc.\")"</string>
+    <string name="title_previous">Précédent</string>
+    <string name="title_next">Suivant</string>
     <string name="title_heure">Heure</string>
     <string name="title_titre">Titre</string>
     <string name="text_titre">Titre (defaut)</string>
@@ -8,6 +9,6 @@
     <string name="text_soustitre">Sous-Titre (defaut)</string>
     <string name="title_contenu">Contenu</string>
     <string name="text_contenu">Contenu (defaut)</string>
-    <string name="title_main">Main</string>
-    <string name="title_preferences">Preferences</string>
+    <string name="title_main">Plan</string>
+    <string name="msg_erreur_lecture">Erreur de lecture</string>
 </resources>
