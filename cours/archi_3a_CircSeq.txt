@@ -1,0 +1,14 @@
+Circuit Séquentiel (1/3)
+#Mémorisation d'1 bit
+  *Avant RS
+  *Bascule RS
+  *Chronogramme RS
+  *Verrou
+  *Maitre-Esclave
+  *Bascule D
+#Mémorisation n-bits 
+  *registre
+  *ram
+  *rom
+#Circuit séquentiel
+  *Forme générale

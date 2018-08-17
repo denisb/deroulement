@@ -1,0 +1,14 @@
+Circuit Séquentiel (2/3)
+#Circuit séquentiel
+  *Forme générale
+#Automates
+  *AFD
+  *Moore vs Mealy
+  *Propriétes
+  *Réalisation
+#Exemples
+  *CompterParité
+  *PoignéeMain
+#Assemblages
+  *Algo Automates
+  *Moore/Mealy

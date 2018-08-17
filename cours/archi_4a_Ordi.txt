@@ -1,0 +1,16 @@
+Ordinateur (1/2)
+#Instruction Langage Machine
+  *Arithmétique
+  *Transfert Mémoire
+  *Rupture Séquence
+  *Inst. Conditionnelles
+#Mode Adressage
+  *Données
+  *Programmes
+#Vie Programme
+  *Analyse
+  *Syntèse
+  *Exécution
+#Exemple
+  *accés mémoire
+  *algo simple

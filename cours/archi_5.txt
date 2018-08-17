@@ -1,0 +1,14 @@
+Divers
+#Anomalies
+  *Bugs
+  *Failles
+#Evolutions
+  *Loi de Moore, Wirth
+  *PipeLine
+  *Cache
+  *MultiThread
+  *MultiCoeur
+  *Cisc,Risc,EW
+#Bilan
+  *Rappel Planning
+  *Rappel CC

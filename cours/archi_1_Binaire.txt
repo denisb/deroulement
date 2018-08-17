@@ -1,0 +1,18 @@
+Révision Binaire
+#Vecteurs binaires
+  *Table de vérité
+  *Arbre de décision
+  *Char & Texte
+  *Naturels
+  *Relatifs (C2)
+#Expressions
+  *Définitions
+  *Formules (de Morgan)
+  *Propriétés
+#Fonctions
+  *Table de vérité
+  *Propriétés
+  *Enumération
+#Equivalence
+  *Exp => Fun
+  *Fun => Exp

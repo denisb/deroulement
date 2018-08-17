@@ -1,0 +1,12 @@
+Ordinateur (2/2)
+#Architecture Von Neumann
+  *PO
+  *Mémoire
+  *PC
+#PC
+  *Cycle de base
+  *Add
+  *Load
+  *Automate 5 inst.
+#Procesim
+  *Démo

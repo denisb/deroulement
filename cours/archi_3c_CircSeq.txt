@@ -1,0 +1,12 @@
+Circuit Séquentiel (3/3)
+#Gros Circuits
+  *Association
+#Flots de données
+  *Algo Circ Seq
+  *Exemple
+#PC&PO
+  *PC
+  *PO
+  *Exemple
+#Complexité
+  *temps, place, conso
