@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">"Déroulement         (\"j'adore quand un plan se déroule sans accroc.\")"</string>
+    <string name="app_name">Déroulement</string>
     <string name="title_previous">Précédent</string>
     <string name="title_next">Suivant</string>
     <string name="title_heure">Heure</string>

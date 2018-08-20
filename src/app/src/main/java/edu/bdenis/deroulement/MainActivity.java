@@ -8,10 +8,14 @@ package edu.bdenis.deroulement;
 // TODO: 16/08/2018 : ajouter un "qui sommes-nous ?"
 // TODO: 16/08/2018 : ajouter des parametres pour le nombre de plans disponible
 // TODO: 16/08/2018 : ajouter des parametres pour la taille des textes
-// TODO: 16/08/2018 : enlever le bandeau du haut "Déroulement (j'adore ...)" (il ne sert à rien)
-// TODO: 16/08/2018 : enregistrer les temps passés sur chaque contenu (si on sait quoi faire avec ensuite), ou seulement tracer l'activité ... 
+// TODO: 16/08/2018 : enregistrer les temps passés sur chaque contenu (si on sait quoi faire avec ensuite), ou seulement tracer l'activité ...
 // TODO: 16/08/2018 : améliorer icone
-// TODO: 16/08/2018 : améliorer déplacement (2 dgts) vs observation (1 dgt)
+// TODO: 17/08/2018 : améliorer la gestion de la taille pour que cela tienne sur une ligne ...
+// TODO: 17/08/2018 : refactoriser le code (chaines, cstes, code dupliqué, taille du code atomique, ...)
+// TODO: 17/08/2018 : alléger les textes en enlevant espace au début/fin et le caractère distinctif
+// TODO: 17/08/2018 : gagner de la place en réduisant haut et bas (nom appli et navigation) 
+// TODO: 17/08/2018 : vérifier init à partir de rien (pas de fichier)
+// TODO: 17/08/2018 : améliorer calcul temps restant en moyenne (considère qu'il faut prévoir de (re)faire tout le  premier element)
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -67,10 +71,17 @@ public class MainActivity extends AppCompatActivity {
     private int decalageTps = 0;
     private int decalageTpsInit = 0;
     private int changeTps = 0;
+    private int tpsPasse = 0;
+    private int savedTpsPasse = 0;
+    private boolean doubleClick = false;
     long startTime = 0;
     private float x1,x2;
     static final int MIN_DISTANCE = 10;
     Handler timerHandler = new Handler();
+    Runnable doubleClickRunnable = new Runnable() {
+        @Override
+        public void run() {
+            doubleClick = false;}};
     Runnable lightRunnable = new Runnable() {
         @Override
         public void run() {
@@ -80,16 +91,36 @@ public class MainActivity extends AppCompatActivity {
     Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
-            long millis = System.currentTimeMillis() - startTime;
+            long millis = System.currentTimeMillis() - startTime + tpsPasse;
+            if (Math.abs(savedTpsPasse-(int) (millis))>1000*30) {
+                SharedPreferences sharedPref;
+                SharedPreferences.Editor editor;
+                sharedPref = getPreferences(Context.MODE_PRIVATE);
+                editor = sharedPref.edit();
+                editor.putInt("saved_temps_passe"+indexPlan, (int) (millis));
+                savedTpsPasse=(int) (millis);
+                editor.commit();}
+            if (((millis/1000)%127)>117) {
+                setTitle(getText(R.string.app_name)+"   \"J'adore quand un plan se déroule sans accroc\"");}
+            else if (((millis/1000)%127)>107) {
+                setTitle(getText(R.string.app_name));}
+            else if (((millis/1000)%127)>97) {
+                setTitle(getText(R.string.app_name)+"   \"On fait comme on a prévu. Quelque chose me dit qu'on va bien s'amuser !\"");}
+            else if (((millis/1000)%127)>87) {
+                setTitle(getText(R.string.app_name));}
+            else if (((millis/1000)%127)>77) {
+                setTitle(getText(R.string.app_name)+"   \"l’important, ce n’est pas la destination, mais le voyage en lui-même\"");}
+            else {
+                setTitle(getText(R.string.app_name));}
             int seconds = (int) (millis / 1000);
             int minutes = seconds / 60; //minutes passées depuis l'heure de début
             int h = 0; int m = 0; int hd, hf, md, mf;
             Calendar calendar = Calendar.getInstance();
             h = calendar.getTime().getHours();
             m = calendar.getTime().getMinutes();
-            int dureeS = 90*60;
-            int dureeMS = 1000 * dureeS;
-            int rm = (dureeS-seconds) / 60; //minutes restantes jusqu'à l'heure de fin
+            int dureeS = 90*60; //valeurs par défaut
+            int dureeMS = 1000 * dureeS; //valeurs par défaut
+            int rm = (dureeS-seconds) / 60; //minutes restantes jusqu'à l'heure de fin //valeurs par défaut
             Pattern regExHeure = Pattern.compile("([^0-9]*)([0-9]+)([^0-9]+)([0-9]+)([^0-9]*)");
             Matcher matchHeure = regExHeure.matcher(heureDebut);
             if (matchHeure.matches()) {
@@ -137,10 +168,10 @@ public class MainActivity extends AppCompatActivity {
                     indexSousTitre++;
                     soustitreText = se;}}
             if (decalageTps>0) {
-                decalageTps = decalageTps - Math.min((3 * decalageTps / 100),15000);}
+                decalageTps = decalageTps - Math.min((3 * decalageTps / 100),25000);}
             else {
-                decalageTps = decalageTps - Math.max((3 * decalageTps / 100),-15000);}
-            timerHandler.postDelayed(this, 50);}};
+                decalageTps = decalageTps - Math.max((3 * decalageTps / 100),-25000);}
+            timerHandler.postDelayed(this, 100);}};
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -154,18 +185,28 @@ public class MainActivity extends AppCompatActivity {
             case MotionEvent.ACTION_DOWN:
                 x1 = event.getX();
                 decalageTpsInit = decalageTps;
+                if (doubleClick) {
+                    if (x1<100) {
+                        changeTps = 0;
+                        tpsPasse = 0;}
+                    else {
+                        changeTps = changeTps + decalageTps;}
+                    SharedPreferences sharedPref;
+                    SharedPreferences.Editor editor;
+                    sharedPref = getPreferences(Context.MODE_PRIVATE);
+                    editor = sharedPref.edit();
+                    editor.putInt("saved_change_temps"+indexPlan,changeTps);
+                    editor.commit();
+                    decalageTps=0;}
+                else {
+                    doubleClick = true;
+                    timerHandler.postDelayed(doubleClickRunnable, 500);}
                 break;
             case MotionEvent.ACTION_MOVE:
                 x2 = event.getX();
                 deltaX = x2 - x1;
                 if (Math.abs(deltaX) > MIN_DISTANCE) {
-                    if (event.getPointerCount()==1) {
-                        decalageTps=decalageTpsInit-(5000*Math.round(deltaX/MIN_DISTANCE));}
-                    else {
-                        x1 = x2;
-                        changeTps = changeTps + decalageTps;
-                        decalageTpsInit = 0;
-                        decalageTps=0;}}
+                    decalageTps = decalageTpsInit - (10000 * Math.round(deltaX / MIN_DISTANCE));}
                 break;}
         return super.onTouchEvent(event);}
 
@@ -230,6 +271,8 @@ public class MainActivity extends AppCompatActivity {
         contenuText = getString(R.string.text_contenu);
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         indexPlan = sharedPref.getInt("saved_index_planning", 0);
+        changeTps = sharedPref.getInt("saved_change_temps"+ indexPlan, 0);
+        tpsPasse = sharedPref.getInt("saved_temps_passe"+ indexPlan, 0);
         heureDebut = sharedPref.getString("saved_heure_debut"+ indexPlan, "8h00");
         heureFin = sharedPref.getString("saved_heure_fin"+ indexPlan, "9h30");
         String strUriPlanning = sharedPref.getString("saved_uri_selected"+ indexPlan, "/");
@@ -237,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
         chargePlanning(tmpSelectedfile);
         mTextMessage.setText(getText(R.string.title_main)+" ("+ indexPlan +")");
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setSelectedItemId(R.id.navigation_main);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         Button boutonHeureDebut=(Button)findViewById(R.id.buttonHeureDebut);
