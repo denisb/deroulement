@@ -1,5 +1,5 @@
 Circuit Combinatoire (1/2)
-#Jusqu'au Transistor
+#Du Transistor jusqu'à la porte logique
   *semi-conducteur
   *graver
 #Portes Logiques

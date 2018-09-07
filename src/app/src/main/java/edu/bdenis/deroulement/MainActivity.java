@@ -38,6 +38,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+/* Context context = getApplicationContext();
+CharSequence text = pSelectedfile.toString();
+int duration = Toast.LENGTH_SHORT;
+Toast toast = Toast.makeText(context, text, duration);
+toast.show(); */
+
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -47,6 +53,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import android.os.Vibrator;
+//<! uses-permission android:name="android.permission.VIBRATE"/ ->
 
 public class MainActivity extends AppCompatActivity {
     private TextView mTextMessage;
@@ -91,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
     Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
+            Vibrator vibs;
             long millis = System.currentTimeMillis() - startTime + tpsPasse;
             if (Math.abs(savedTpsPasse-(int) (millis))>1000*30) {
                 SharedPreferences sharedPref;
@@ -114,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 setTitle(getText(R.string.app_name));}
             int seconds = (int) (millis / 1000);
             int minutes = seconds / 60; //minutes passées depuis l'heure de début
-            int h = 0; int m = 0; int hd, hf, md, mf;
+            int h = 0; int m = 0; int hd=13, hf=15, md=30, mf=0;
             Calendar calendar = Calendar.getInstance();
             h = calendar.getTime().getHours();
             m = calendar.getTime().getMinutes();
@@ -123,17 +132,19 @@ public class MainActivity extends AppCompatActivity {
             int rm = (dureeS-seconds) / 60; //minutes restantes jusqu'à l'heure de fin //valeurs par défaut
             Pattern regExHeure = Pattern.compile("([^0-9]*)([0-9]+)([^0-9]+)([0-9]+)([^0-9]*)");
             Matcher matchHeure = regExHeure.matcher(heureDebut);
-            if (matchHeure.matches()) {
-                hd = Integer.parseInt(matchHeure.group(2));
-                md = Integer.parseInt(matchHeure.group(4));}
-            else {
-                hd = 0; md = 0; heureDebut= "08h00";}
+            try{if (matchHeure.matches()) {
+                    hd = Integer.parseInt(matchHeure.group(2));
+                    md = Integer.parseInt(matchHeure.group(4));}
+                else {
+                    hd = 0; md = 0; heureDebut= "08h00";}}
+            catch (Error e) {};
             matchHeure = regExHeure.matcher(heureFin);
-            if (matchHeure.matches() && (matchHeure.groupCount()>2)) {
+            try{if (matchHeure.matches() && (matchHeure.groupCount()>2)) {
                 hf = Integer.parseInt(matchHeure.group(2));
                 mf = Integer.parseInt(matchHeure.group(4));}
             else {
-                hf = 0; mf = 0; heureFin= "09h30";}
+                hf = 0; mf = 0; heureFin= "09h30";}}
+            catch (Error e) {};
             if (((h>hd)||((h==hd)&&(m>=md)))&&((h<hf)||((h==hf)&&(m<=mf)))) {
                 minutes = 60 * (h-hd) + m - md;
                 dureeS = 60*(hf-hd)+mf-md ; //duree reelle en minute !
@@ -162,7 +173,13 @@ public class MainActivity extends AppCompatActivity {
                         soustitreTextView.setText(soustitreText);
                         soustitreTextView.setX(220-Math.round((200*nbSousTitres)*(millis+decalageTps+changeTps-((indexSousTitre*dureeMS)/nbSousTitres))/dureeMS ));
                         contenuTextView.setText(contenuText+" <<"+listStrings.get(k+1));
+                        if (Math.abs(millis+decalageTps+changeTps-((indexSousTitre*dureeMS)/nbSousTitres))<299) {
+                            vibs = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            vibs.vibrate(250);}
                         contenuTextView.setX(220-Math.round((200*nbContenus)*(millis+decalageTps+changeTps-((indexContenu*dureeMS)/nbContenus))/dureeMS ));
+                        if (Math.abs(millis+decalageTps+changeTps-((indexContenu*dureeMS)/nbContenus))<299) {
+                            vibs = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            vibs.vibrate(100);}
                         break;}}
                 if (se.charAt(0)==charSousTitre) {
                     indexSousTitre++;
@@ -171,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                 decalageTps = decalageTps - Math.min((3 * decalageTps / 100),25000);}
             else {
                 decalageTps = decalageTps - Math.max((3 * decalageTps / 100),-25000);}
-            timerHandler.postDelayed(this, 100);}};
+            timerHandler.postDelayed(this, 300);}};
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -230,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                     heureFin = sharedPref.getString("saved_heure_fin"+ indexPlan, "9h30");
                     strUriPlanning = sharedPref.getString("saved_uri_selected"+ indexPlan, "/");
                     tmpSelectedfile = Uri.parse(strUriPlanning);
-                    chargePlanning(tmpSelectedfile);
+                    chargePlanning(tmpSelectedfile); //avant
                     return true;
                 case R.id.navigation_main:
                     mTextMessage.setText(getText(R.string.title_main)+" ("+ indexPlan +")");
@@ -248,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
                     heureFin = sharedPref.getString("saved_heure_fin"+ indexPlan, "9h30");
                     strUriPlanning = sharedPref.getString("saved_uri_selected"+ indexPlan, "/");
                     tmpSelectedfile = Uri.parse(strUriPlanning);
-                    chargePlanning(tmpSelectedfile);
+                    chargePlanning(tmpSelectedfile); //apres
                     return true;}
             return false;}};
 
@@ -277,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
         heureFin = sharedPref.getString("saved_heure_fin"+ indexPlan, "9h30");
         String strUriPlanning = sharedPref.getString("saved_uri_selected"+ indexPlan, "/");
         Uri tmpSelectedfile = Uri.parse(strUriPlanning);
-        chargePlanning(tmpSelectedfile);
+        chargePlanning(tmpSelectedfile); //init
         mTextMessage.setText(getText(R.string.title_main)+" ("+ indexPlan +")");
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_main);
@@ -334,13 +351,24 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("saved_uri_selected"+ indexPlan, selectedfile.toString());
             editor.commit();
-            chargePlanning(selectedfile);}}
+            chargePlanning(selectedfile);
+        }} //changement
 
     protected void chargePlanning(Uri pSelectedfile) {
-        int i=0; int j;
-        ContentResolver cr = getContentResolver();
-        InputStream is = null;
         try {
+            int i=0; int j;
+            ContentResolver cr = getContentResolver();
+            InputStream is = null;
+            if (false) {
+                Context context = getApplicationContext();
+                CharSequence text = pSelectedfile.toString();
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
+                //is = cr.openInputStream(pSelectedfile);
+            }
+            else {
             is = cr.openInputStream(pSelectedfile);
             Scanner s = new Scanner(is).useDelimiter("\\A");
             String str_in = s.hasNext() ? s.next() : "";
@@ -377,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
                     nbContenus++;}
                 if (se.charAt(0)==charSousTitre) {
                     nbSousTitres++;}}
-        } catch (FileNotFoundException e) {
+        }} catch (FileNotFoundException e) {
             mTextMessage.setText(getText(R.string.msg_erreur_lecture)+" ("+ indexPlan +")");
             e.printStackTrace();}
       return;}
