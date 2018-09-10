@@ -1,8 +1,9 @@
-Circuit Combinatoire (1/2)
-#Du Transistor jusqu'à la porte logique
+Circuit Combinatoire [petit] (1/2)
+#De la physique jusqu'au Transistor 
   *semi-conducteur
   *graver
-#Portes Logiques
+  *transistor
+#Du transistor jusqu'à la porte logique
   *Not
   *Nand
   *Propriétés
@@ -10,3 +11,7 @@ Circuit Combinatoire (1/2)
   *Portes classiques
   *Dessins
   *Exemples
+#Réalisation technique
+  *Wrapping
+  *PLA
+  *Description textuel  

@@ -43,6 +43,7 @@ CharSequence text = pSelectedfile.toString();
 int duration = Toast.LENGTH_SHORT;
 Toast toast = Toast.makeText(context, text, duration);
 toast.show(); */
+// ou juste : Toast.makeText(getApplicationContext(), "Message du moment" , Toast.LENGTH_SHORT).show();
 
 
 import java.io.FileNotFoundException;
@@ -108,7 +109,9 @@ public class MainActivity extends AppCompatActivity {
                 editor = sharedPref.edit();
                 editor.putInt("saved_temps_passe"+indexPlan, (int) (millis));
                 savedTpsPasse=(int) (millis);
-                editor.commit();}
+                editor.commit();
+                //Toast.makeText(getApplicationContext(), "times runinng", Toast.LENGTH_SHORT).show();
+                }
             if (((millis/1000)%127)>117) {
                 setTitle(getText(R.string.app_name)+"   \"J'adore quand un plan se déroule sans accroc\"");}
             else if (((millis/1000)%127)>107) {
@@ -137,31 +140,37 @@ public class MainActivity extends AppCompatActivity {
                     md = Integer.parseInt(matchHeure.group(4));}
                 else {
                     hd = 0; md = 0; heureDebut= "08h00";}}
-            catch (Error e) {};
+            catch (Error e) {Toast.makeText(getApplicationContext(), "Erreur 002", Toast.LENGTH_SHORT).show();};
             matchHeure = regExHeure.matcher(heureFin);
             try{if (matchHeure.matches() && (matchHeure.groupCount()>2)) {
                 hf = Integer.parseInt(matchHeure.group(2));
                 mf = Integer.parseInt(matchHeure.group(4));}
             else {
                 hf = 0; mf = 0; heureFin= "09h30";}}
-            catch (Error e) {};
+            catch (Error e) {Toast.makeText(getApplicationContext(), "Erreur 003", Toast.LENGTH_SHORT).show();};
             if (((h>hd)||((h==hd)&&(m>=md)))&&((h<hf)||((h==hf)&&(m<=mf)))) {
                 minutes = 60 * (h-hd) + m - md;
                 dureeS = 60*(hf-hd)+mf-md ; //duree reelle en minute !
                 dureeMS = 1000*60*dureeS+changeTps;  //duree modifiée/changée en ?!?
+                if (dureeMS==0) {
+                    Toast.makeText(getApplicationContext(), "Close to the end", Toast.LENGTH_SHORT).show();
+                    dureeMS = 1000;}
                 rm = dureeS - minutes;}
             Button boutonHeureDebut=(Button)findViewById(R.id.buttonHeureDebut);
             boutonHeureDebut.setX(20);
             boutonHeureDebut.setY(timerTextView.getY());
             boutonHeureDebut.setText(heureDebut+"+("+minutes+")");
-            timerTextView.setText(String.format("%dh%d (%d*%dmin)",h,m,nbContenus-indexContenu,rm/(nbContenus-indexContenu)));
+            if (nbContenus==indexContenu) {
+                timerTextView.setText(String.format("%dh%d (faut finir)",h,m));}
+            else {
+                timerTextView.setText(String.format("%dh%d (%d*%dmin)",h,m,nbContenus-indexContenu,rm/(nbContenus-indexContenu)));}
             timerTextView.setX(boutonHeureDebut.getX()+boutonHeureDebut.getWidth());
             Button boutonHeureFin=(Button)findViewById(R.id.buttonHeureFin);
             boutonHeureFin.setX(timerTextView.getX()+timerTextView.getWidth());
             boutonHeureFin.setY(timerTextView.getY());
             boutonHeureFin.setText(heureFin+("-("+rm+")"));
             titreTextView.setText(titreText);
-            titreTextView.setX(220-Math.round((200*(millis+decalageTps+changeTps))/dureeMS));
+            titreTextView.setX(Math.abs(220-Math.round((200*(millis+decalageTps+changeTps))/dureeMS)));
             indexContenu = -1;
             indexSousTitre = -1;
             for(int k = 0; k < listStrings.size(); k++) {
@@ -171,12 +180,15 @@ public class MainActivity extends AppCompatActivity {
                     if (indexContenu==Math.round(((millis+decalageTps+changeTps)*nbContenus)/dureeMS)) {
                         contenuText = se;
                         soustitreTextView.setText(soustitreText);
-                        soustitreTextView.setX(220-Math.round((200*nbSousTitres)*(millis+decalageTps+changeTps-((indexSousTitre*dureeMS)/nbSousTitres))/dureeMS ));
-                        contenuTextView.setText(contenuText+" <<"+listStrings.get(k+1));
+                        soustitreTextView.setX(Math.abs(220-Math.round((200*nbSousTitres)*(millis+decalageTps+changeTps-((indexSousTitre*dureeMS)/nbSousTitres))/dureeMS )));
+                        if (k==(listStrings.size()-1)) {
+                            contenuTextView.setText(contenuText+" <<rien (fini)");}
+                        else {
+                            contenuTextView.setText(contenuText+" <<"+listStrings.get(k+1));}
                         if (Math.abs(millis+decalageTps+changeTps-((indexSousTitre*dureeMS)/nbSousTitres))<299) {
                             vibs = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                             vibs.vibrate(250);}
-                        contenuTextView.setX(220-Math.round((200*nbContenus)*(millis+decalageTps+changeTps-((indexContenu*dureeMS)/nbContenus))/dureeMS ));
+                        contenuTextView.setX(Math.abs(220-Math.round((200*nbContenus)*(millis+decalageTps+changeTps-((indexContenu*dureeMS)/nbContenus))/dureeMS )));
                         if (Math.abs(millis+decalageTps+changeTps-((indexContenu*dureeMS)/nbContenus))<299) {
                             vibs = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                             vibs.vibrate(100);}
@@ -184,6 +196,13 @@ public class MainActivity extends AppCompatActivity {
                 if (se.charAt(0)==charSousTitre) {
                     indexSousTitre++;
                     soustitreText = se;}}
+            if (indexContenu==-1) {
+                indexContenu = 0;
+                Toast.makeText(getApplicationContext(), "Index de contenu ?", Toast.LENGTH_SHORT).show();}
+            if (indexSousTitre==-1) {
+                indexSousTitre = 0;
+                Toast.makeText(getApplicationContext(), "Index de titre ?", Toast.LENGTH_SHORT).show();}
+
             if (decalageTps>0) {
                 decalageTps = decalageTps - Math.min((3 * decalageTps / 100),25000);}
             else {
@@ -205,9 +224,11 @@ public class MainActivity extends AppCompatActivity {
                 if (doubleClick) {
                     if (x1<100) {
                         changeTps = 0;
-                        tpsPasse = 0;}
+                        tpsPasse = 0;
+                        Toast.makeText(getApplicationContext(), "Reset", Toast.LENGTH_SHORT).show();}
                     else {
-                        changeTps = changeTps + decalageTps;}
+                        changeTps = changeTps + decalageTps;
+                        Toast.makeText(getApplicationContext(), "Stop rewind", Toast.LENGTH_SHORT).show();}
                     SharedPreferences sharedPref;
                     SharedPreferences.Editor editor;
                     sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -365,10 +386,8 @@ public class MainActivity extends AppCompatActivity {
                 int duration = Toast.LENGTH_SHORT;
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
-
                 //is = cr.openInputStream(pSelectedfile);
-            }
-            else {
+            } else {
             is = cr.openInputStream(pSelectedfile);
             Scanner s = new Scanner(is).useDelimiter("\\A");
             String str_in = s.hasNext() ? s.next() : "";
@@ -387,13 +406,28 @@ public class MainActivity extends AppCompatActivity {
                         break;}}
                 j = i;
                 for (; i < str_in.length(); i++) {
-                    if ((str_in.charAt(i) == 10) || (str_in.charAt(i) == 13)) {
+                    if ((str_in.charAt(i) == 10) || (str_in.charAt(i) == 13)||(i==(str_in.length()-1))) {
                         listStrings.add(str_in.substring(j, i));
                         break;}}}
-            soustitreText = listStrings.get(0);
-            charSousTitre = soustitreText.charAt(0);
-            contenuText = listStrings.get(1);
-            charContenu = contenuText.charAt(0);
+
+            if (listStrings.size()==0) {
+                soustitreText = "Pas de sous-titre";
+                charSousTitre = '#';}
+            else {
+                soustitreText = listStrings.get(0);
+                if (soustitreText.length()==0) {
+                    charSousTitre = '#';}
+                else {
+                    charSousTitre = soustitreText.charAt(0);}}
+            if (listStrings.size()>=2) {
+                contenuText = listStrings.get(1);
+                if (contenuText.length()==0) {
+                    charContenu = '*';}
+                else {
+                    charContenu = contenuText.charAt(0);}}
+            else {
+                contenuText = "Pas de contenu";
+                charContenu = '*';}
             indexStrings = 2;
             indexContenu = 1;
             indexSousTitre = 1;
@@ -401,12 +435,21 @@ public class MainActivity extends AppCompatActivity {
             nbSousTitres = 0;
             for(int k = 0; k < listStrings.size(); k++) {
                 String se =  listStrings.get(k);
-                if (se.charAt(0)==charContenu) {
+                if ((se.length()>0)&&(se.charAt(0)==charContenu)) {
                     nbContenus++;}
-                if (se.charAt(0)==charSousTitre) {
+                if ((se.length()>0)&&(se.charAt(0)==charSousTitre)) {
                     nbSousTitres++;}}
+            if (nbContenus==0) {
+                nbContenus = 1;
+                Toast.makeText(getApplicationContext(), "Pas de contenu ?", Toast.LENGTH_SHORT).show();}
+            if (nbSousTitres==0) {
+                nbSousTitres = 1;
+                Toast.makeText(getApplicationContext(), "Pas de titre ?", Toast.LENGTH_SHORT).show();}
+            String msgLecture = "Lect tit+ "+listStrings.size()+" l, "+nbSousTitres+" st, "+nbContenus+" ct.";
+            Toast.makeText(getApplicationContext(), msgLecture, Toast.LENGTH_SHORT).show();
         }} catch (FileNotFoundException e) {
             mTextMessage.setText(getText(R.string.msg_erreur_lecture)+" ("+ indexPlan +")");
+            Toast.makeText(getApplicationContext(), "Erreur 001", Toast.LENGTH_SHORT).show();
             e.printStackTrace();}
       return;}
 
