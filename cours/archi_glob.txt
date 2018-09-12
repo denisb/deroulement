@@ -1,0 +1,163 @@
+Cours Architecture 
+#2018-2019
+  *déroulé global L3Miage
+  
+Semaine 1
+Introduction Cours Architecture archi_0_Intro.txt
+#Présentation
+  *Coordonnées
+  *Objectifs
+  *EdT
+#Planning
+  *Circuit Combinatoire
+  *Circuit Sequentiel
+  *Ordinateur
+#Bibliographie
+  *Références
+#Controle Connaissance
+  *Reglement
+
+Révision Binaire archi_1_Binaire.txt
+#Vecteurs binaires
+  *Table de vérité
+  *Arbre de décision
+  *Char & Texte
+  *Naturels
+  *Relatifs (C2)
+#Expressions
+  *Définitions
+  *Formules (de Morgan)
+  *Propriétés
+#Fonctions
+  *Table de vérité
+  *Propriétés
+  *Enumération
+#Equivalence
+  *Exp => Fun
+
+Semaine 2  
+  *Fun => Exp
+  
+Circuit Combinatoire [petit] (1/2) archi_2a_CircCombi.txt
+#De l'électron jusqu'au Transistor 
+  *semi-conducteur
+  *graver
+  *transistor
+#Du transistor jusqu'à la porte logique
+  *Not
+  *Nand
+  *Propriétés
+#Premiers Circuits
+  *Portes classiques
+
+Semaine 3
+  *Dessins
+  *Exemples
+#Réalisation technique
+  *Wrapping
+  *PLA
+  *Description textuel 
+
+Circuit Combinatoire [gros] (2/2) archi_2b_CircCombi.txt
+#Logisim
+  *Présentation
+#Gros Circuits Classiques
+  *ADD,OR,NOT
+  *Add
+  *Sub
+  *Test
+  *Mux
+#Encore Plus Gros circuits
+  *Assemblage manuel
+  *Algo des circuits
+  *Exemple
+#ROM
+  *circuit  
+  
+Circuit Séquentiel (1/3) archi_3a_CircSeq.txt
+#Mémorisation d'1 bit
+  *Avant RS
+  *Bascule RS
+  *Chronogramme RS
+  *Verrou
+  *Maitre-Esclave
+  *Bascule D
+#Mémorisation n-bits 
+  *registre
+  *ram
+  *rom
+#Circuit séquentiel
+  *Forme générale
+  
+Circuit Séquentiel (2/3) archi_3b_CircSeq.txt
+#Circuit séquentiel
+  *Forme générale
+#Automates
+  *AFD
+  *Moore vs Mealy
+  *Propriétes
+  *Réalisation
+#Exemples
+  *CompterParité
+  *PoignéeMain
+#Assemblages
+  *Algo Automates
+  *Moore/Mealy
+  
+Circuit Séquentiel (3/3) archi_3c_CircSeq.txt
+#Gros Circuits
+  *Association
+#Flots de données
+  *Algo Circ Seq
+  *Exemple
+#PC&PO
+  *PC
+  *PO
+  *Exemple
+#Complexité
+  *temps, place, conso
+  
+Ordinateur (1/2) archi_4a_Ordi.txt
+#Instruction Langage Machine
+  *Arithmétique
+  *Transfert Mémoire
+  *Rupture Séquence
+  *Inst. Conditionnelles
+#Mode Adressage
+  *Données
+  *Programmes
+#Vie Programme
+  *Analyse
+  *Syntèse
+  *Exécution
+#Exemple
+  *accés mémoire
+  *algo simple
+  
+Ordinateur (2/2) archi_4b_Ordi.txt
+#Architecture Von Neumann
+  *PO
+  *Mémoire
+  *PC
+#PC
+  *Cycle de base
+  *Add
+  *Load
+  *Automate 5 inst.
+#Procesim
+  *Démo
+  
+Divers archi_5_Annexes.txt
+#Anomalies
+  *Bugs
+  *Failles
+#Evolutions
+  *Loi de Moore, Wirth
+  *PipeLine
+  *Cache
+  *MultiThread
+  *MultiCoeur
+  *Cisc,Risc,EW
+#Bilan
+  *Rappel Planning
+  *Rappel CC
