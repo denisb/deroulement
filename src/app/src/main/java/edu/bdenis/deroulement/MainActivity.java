@@ -198,11 +198,12 @@ public class MainActivity extends AppCompatActivity {
                     soustitreText = se;}}
             if (indexContenu==-1) {
                 indexContenu = 0;
-                Toast.makeText(getApplicationContext(), "Index de contenu ?", Toast.LENGTH_SHORT).show();}
+                //Toast.makeText(getApplicationContext(), "Index de contenu ?", Toast.LENGTH_SHORT).show();
+                setTitle(getText(R.string.app_name)+"   \"(Index de contenu ?)\"");}
             if (indexSousTitre==-1) {
                 indexSousTitre = 0;
-                Toast.makeText(getApplicationContext(), "Index de titre ?", Toast.LENGTH_SHORT).show();}
-
+                //Toast.makeText(getApplicationContext(), "Index de titre ?", Toast.LENGTH_SHORT).show();
+                setTitle(getText(R.string.app_name)+"   \"(Index de titre ?)\"");}
             if (decalageTps>0) {
                 decalageTps = decalageTps - Math.min((3 * decalageTps / 100),25000);}
             else {
@@ -268,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
                     heureFin = sharedPref.getString("saved_heure_fin"+ indexPlan, "9h30");
                     strUriPlanning = sharedPref.getString("saved_uri_selected"+ indexPlan, "/");
                     tmpSelectedfile = Uri.parse(strUriPlanning);
-                    chargePlanning(tmpSelectedfile); //avant
+                    chargePlanning(tmpSelectedfile, true); //avant
                     return true;
                 case R.id.navigation_main:
                     mTextMessage.setText(getText(R.string.title_main)+" ("+ indexPlan +")");
@@ -286,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
                     heureFin = sharedPref.getString("saved_heure_fin"+ indexPlan, "9h30");
                     strUriPlanning = sharedPref.getString("saved_uri_selected"+ indexPlan, "/");
                     tmpSelectedfile = Uri.parse(strUriPlanning);
-                    chargePlanning(tmpSelectedfile); //apres
+                    chargePlanning(tmpSelectedfile, true); //apres
                     return true;}
             return false;}};
 
@@ -315,12 +316,12 @@ public class MainActivity extends AppCompatActivity {
         heureFin = sharedPref.getString("saved_heure_fin"+ indexPlan, "9h30");
         String strUriPlanning = sharedPref.getString("saved_uri_selected"+ indexPlan, "/");
         Uri tmpSelectedfile = Uri.parse(strUriPlanning);
-        chargePlanning(tmpSelectedfile); //init
+        chargePlanning(tmpSelectedfile,true); //init
         mTextMessage.setText(getText(R.string.title_main)+" ("+ indexPlan +")");
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setSelectedItemId(R.id.navigation_main);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); //si execute, relance create ... => manifest (1 seul create)
         Button boutonHeureDebut=(Button)findViewById(R.id.buttonHeureDebut);
         boutonHeureDebut.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
@@ -372,25 +373,41 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("saved_uri_selected"+ indexPlan, selectedfile.toString());
             editor.commit();
-            chargePlanning(selectedfile);
+            chargePlanning(selectedfile,false);
         }} //changement
 
-    protected void chargePlanning(Uri pSelectedfile) {
+    protected void chargePlanning(Uri pSelectedfile, Boolean saved_content) {
+        int i=0; int j; String str_in;
         try {
-            int i=0; int j;
-            ContentResolver cr = getContentResolver();
-            InputStream is = null;
-            if (false) {
-                Context context = getApplicationContext();
-                CharSequence text = pSelectedfile.toString();
-                int duration = Toast.LENGTH_SHORT;
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
+            if (saved_content) {
+                //Context context = getApplicationContext();
+                //CharSequence text = pSelectedfile.toString();
+                //int duration = Toast.LENGTH_SHORT;
+                //Toast toast = Toast.makeText(context, text, duration);
+                //toast.show();
                 //is = cr.openInputStream(pSelectedfile);
+                str_in = "TitreVide\n#SousTitreVide\n*ContenuVide";
+                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                str_in = sharedPref.getString("saved_file_content"+indexPlan, "Titre-Vide\n#SousTitre-Vide\n*Contenu-Vide");
+
             } else {
-            is = cr.openInputStream(pSelectedfile);
-            Scanner s = new Scanner(is).useDelimiter("\\A");
-            String str_in = s.hasNext() ? s.next() : "";
+                ContentResolver cr = getContentResolver();
+                InputStream is = null;
+                is = cr.openInputStream(pSelectedfile);
+                Scanner s = new Scanner(is).useDelimiter("\\A"); //début de chaine
+                str_in = s.hasNext() ? s.next() : "";
+                SharedPreferences sharedPref;
+                SharedPreferences.Editor editor;
+                sharedPref = getPreferences(Context.MODE_PRIVATE);
+                editor = sharedPref.edit();
+                editor.putString("saved_file_content"+indexPlan,str_in);
+                editor.commit();}
+        } catch (FileNotFoundException e) {
+            mTextMessage.setText(getText(R.string.msg_erreur_lecture)+" ("+ indexPlan +")");
+            Toast.makeText(getApplicationContext(), "Erreur 001", Toast.LENGTH_SHORT).show();
+            str_in = "TitreVide\n#SousTitreVide\n*ContenuVide";
+            e.printStackTrace();}
+
             for(; i<str_in.length();i++) {
                 if (str_in.charAt(i)>32) {
                     break;}}
@@ -445,12 +462,9 @@ public class MainActivity extends AppCompatActivity {
             if (nbSousTitres==0) {
                 nbSousTitres = 1;
                 Toast.makeText(getApplicationContext(), "Pas de titre ?", Toast.LENGTH_SHORT).show();}
+            Toast.makeText(getApplicationContext(), pSelectedfile.toString(), Toast.LENGTH_SHORT).show();
             String msgLecture = "Lect tit+ "+listStrings.size()+" l, "+nbSousTitres+" st, "+nbContenus+" ct.";
             Toast.makeText(getApplicationContext(), msgLecture, Toast.LENGTH_SHORT).show();
-        }} catch (FileNotFoundException e) {
-            mTextMessage.setText(getText(R.string.msg_erreur_lecture)+" ("+ indexPlan +")");
-            Toast.makeText(getApplicationContext(), "Erreur 001", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();}
       return;}
 
 }
