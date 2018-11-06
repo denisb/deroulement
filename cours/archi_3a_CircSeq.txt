@@ -1,6 +1,9 @@
 Circuit Séquentiel (1/3)
+#Introduction
+  *Bouclage +1 intempestif
 #Mémorisation d'1 bit
-  *Avant RS
+  *Boucle Not
+  *Bistable
   *Bascule RS
   *Chronogramme RS
   *Verrou
