@@ -1,0 +1,22 @@
+Circuit Combinatoire
+#De l'électron à la porte logique 
+  *semi-conducteur
+  *photo-gravure
+  *transistor
+  *Logisim
+  *Not
+  *Nand
+  *Propriétés
+#Premiers Circuits (petits circuits)
+  *Portes classiques
+  *Fils, Dessins
+  *Exemple, Add 3bits, Mux 2>1
+#Gros Circuits (par composition/division)
+  *Add
+  *Mux
+  *Algo des circuits
+  *Définitions récursives
+#Réalisations pratiques
+  *Wrapping
+  *PLA
+  
